@@ -19,7 +19,7 @@ type NamingRecord struct {
 	Sensitive_content bool              `json:"Sensitive_content,omitempty"`
 	Series_number     int64             `json:"series_number,omitempty"`
 	Series_total      int64             `json:"series_total,omitempty"`
-	Attributes        map[string]string `json:"attributes,omitempty"`
+	Attributes        []string          `json:"attributes,omitempty"`
 	Collection        Collection        `json:"collection,omitempty"`
 	Data              map[string]string `json:"data,omitempty"`
 	Hash              string            `json:"hash,omitempty"`
@@ -47,7 +47,7 @@ func main() {
 	//Assign sha256 value
 	var list []NamingRecord
 	for _, line := range data[2:] {
-		attributes := map[string]string{"type": line[5], "value": line[5]}
+		attributes := []string{line[5]}
 		hash := sha256.New()
 		namingList := NamingRecord{
 			FileName:    line[1],
@@ -79,7 +79,7 @@ func main() {
 	//Create rows and columns
 	for _, r := range list {
 		var csvRow []string
-		csvRow = append(csvRow, r.FileName, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
+		csvRow = append(csvRow, r.FileName, r.Description, fmt.Sprint(r.Attributes), r.Collection.ID, r.Hash)
 		err = w.Write(csvRow)
 		if err != nil {
 			log.Fatal(err)
