@@ -23,7 +23,8 @@ type NamingRecord struct {
 	Data              map[string]string `json:"data,omitempty"`
 	Hash              string            `json:"hash,omitempty"`
 }
-// Create a struct for type Collection  
+
+// Create a struct for type Collection
 type Collection struct {
 	Name       string              `json:"name,omitempty"`
 	ID         string              `json:"id,omitempty"`
@@ -42,7 +43,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//Assign sha256 value 
+	//Assign sha256 value
 	var list []NamingRecord
 	for _, line := range data[2:] {
 		attributes := map[string]string{"trait_type": "Gender", "value": line[4]}
@@ -76,7 +77,7 @@ func main() {
 	//Create rows and columns
 	for _, r := range list {
 		var csvRow []string
-		csvRow = append(csvRow, r.Format, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
+		csvRow = append(csvRow, r.Format, r.Name, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
 		err = w.Write(csvRow)
 		if err != nil {
 			log.Fatal(err)
