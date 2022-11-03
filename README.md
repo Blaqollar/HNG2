@@ -7,8 +7,10 @@ Golang has a good backward compatibilty policy so go1.16 & above should work jus
 
 SETUP
 
-Attach: csv file of your choice with the same name 
+Attach: csv file of your choice with name {HNGi9 CVS FILE - Sheet1.csv} 
 
-Run: go mod download
+Run: go mod tidy
+
+Run: go run main.go
 
 You are good to GO !
