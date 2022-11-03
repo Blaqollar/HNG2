@@ -9,12 +9,6 @@ import (
 	"os"
 )
 
-type Collection struct {
-	Name       string              `json:"name,omitempty"`
-	ID         string              `json:"id,omitempty"`
-	Attributes []map[string]string `json:"attributes,omitempty"`
-}
-
 // Create a struct for storing CSV lines and annotate it with JSON struct field tags
 type NamingRecord struct {
 	Format            string            `json:"format,omitempty"`
@@ -29,6 +23,12 @@ type NamingRecord struct {
 	Data              map[string]string `json:"data,omitempty"`
 	Hash              string            `json:"hash,omitempty"`
 }
+// Create a struct for type Collection  
+type Collection struct {
+	Name       string              `json:"name,omitempty"`
+	ID         string              `json:"id,omitempty"`
+	Attributes []map[string]string `json:"attributes,omitempty"`
+}
 
 func main() {
 	// open file
@@ -42,6 +42,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Assign sha256 value 
 	var list []NamingRecord
 	for _, line := range data[2:] {
 		attributes := map[string]string{"trait_type": "Gender", "value": line[4]}
@@ -58,6 +59,7 @@ func main() {
 		namingList.Hash = hash1
 		list = append(list, namingList)
 	}
+	// Create an output file to store hashed data
 	csvFile, err := os.Create("filename.output.csv")
 	if err != nil {
 		log.Fatal(err)
@@ -65,16 +67,22 @@ func main() {
 	defer csvFile.Close()
 	w := csv.NewWriter(csvFile)
 	defer w.Flush()
+	//Create Headers
 	header := []string{"Filename", "Name", "Description", "Gender", "Attributes", "UUID", "HASH"}
 	err = w.Write(header)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Create rows and columns
 	for _, r := range list {
 		var csvRow []string
 		csvRow = append(csvRow, r.Format, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
 		err = w.Write(csvRow)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+	//Display JSON Output
 	prettyJson, _ := json.MarshalIndent(list, "", "  ")
 	fmt.Println(string(prettyJson))
 }
