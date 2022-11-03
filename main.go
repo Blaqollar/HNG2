@@ -12,7 +12,7 @@ import (
 // Create a struct for storing CSV lines and annotate it with JSON struct field tags
 type NamingRecord struct {
 	Format            string            `json:"format,omitempty"`
-	Name              string            `json:"name,omitempty"`
+	FileName          string            `json:"file_name,omitempty"`
 	Description       string            `json:"description,omitempty"`
 	MintingTool       string            `json:"minting_tool,omitempty"`
 	Sensitive_content bool              `json:"Sensitive_content,omitempty"`
@@ -33,7 +33,7 @@ type Collection struct {
 
 func main() {
 	// open file
-	f, err := os.Open("HNGi9 CVS FILE - Sheet1.csv")
+	f, err := os.Open("NFT Naming csv - Team Clutch.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,13 +46,14 @@ func main() {
 	//Assign sha256 value
 	var list []NamingRecord
 	for _, line := range data[2:] {
-		attributes := map[string]string{"trait_type": "Gender", "value": line[4]}
+		attributes := map[string]string{"trait_type": "Gender", "value": line[3]}
 		hash := sha256.New()
+		format := "CHIP-0007"
 		namingList := NamingRecord{
-			Format:      line[1],
-			Name:        line[2],
-			Description: line[3],
-			Collection:  Collection{ID: line[6]},
+			Format:      format,
+			FileName:    line[1],
+			Description: line[2],
+			Collection:  Collection{ID: line[4]},
 			Attributes:  attributes,
 		}
 		hash.Write([]byte(fmt.Sprint(namingList)))
@@ -77,7 +78,7 @@ func main() {
 	//Create rows and columns
 	for _, r := range list {
 		var csvRow []string
-		csvRow = append(csvRow, r.Format, r.Name, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
+		csvRow = append(csvRow, r.FileName, r.Description, r.Attributes["value"], r.Collection.ID, r.Hash)
 		err = w.Write(csvRow)
 		if err != nil {
 			log.Fatal(err)
