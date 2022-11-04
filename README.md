@@ -7,7 +7,7 @@ Golang has a good backward compatibilty policy so go1.16 & above should work jus
 
 SETUP
 
-Attach: csv file of your choice with name {HNGi9 CVS FILE - Sheet1.csv} 
+Attach: csv file of your choice with name {NFT Naming csv .csv} 
 
 Run: go mod tidy
 
