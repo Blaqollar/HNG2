@@ -11,13 +11,14 @@ import (
 
 // Create a struct for storing CSV lines and annotate it with JSON struct field tags
 type NamingRecord struct {
+	TeamName          string            `json:"team_name,omitempty"`
+	Series_number     string            `json:"series_number,omitempty"`
 	FileName          string            `json:"file_name,omitempty"`
 	Name              string            `json:"name,omitempty"`
 	Description       string            `json:"description,omitempty"`
 	Gender            string            `json:"gender,omitempty"`
 	MintingTool       string            `json:"minting_tool,omitempty"`
 	Sensitive_content bool              `json:"Sensitive_content,omitempty"`
-	Series_number     int64             `json:"series_number,omitempty"`
 	Series_total      int64             `json:"series_total,omitempty"`
 	Attributes        []string          `json:"attributes,omitempty"`
 	Collection        Collection        `json:"collection,omitempty"`
@@ -34,7 +35,7 @@ type Collection struct {
 
 func main() {
 	// open file
-	f, err := os.Open("NFT Naming csv .csv")
+	f, err := os.Open("HNGi9 CSV FILE - Sheet1.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,16 +47,18 @@ func main() {
 	}
 	//Assign sha256 value
 	var list []NamingRecord
-	for _, line := range data[2:] {
-		attributes := []string{line[5]}
+	for _, line := range data[1:] {
+		attributes := []string{line[6]}
 		hash := sha256.New()
 		namingList := NamingRecord{
-			FileName:    line[1],
-			Name:        line[2],
-			Description: line[3],
-			Gender:      line[4],
-			Collection:  Collection{ID: line[6]},
-			Attributes:  attributes,
+			TeamName:      line[0],
+			Series_number: line[1],
+			FileName:      line[2],
+			Name:          line[3],
+			Description:   line[4],
+			Gender:        line[5],
+			Collection:    Collection{ID: line[7]},
+			Attributes:    attributes,
 		}
 		hash.Write([]byte(fmt.Sprint(namingList)))
 		hash1 := fmt.Sprintf("%x", hash.Sum(nil))
@@ -71,7 +74,7 @@ func main() {
 	w := csv.NewWriter(csvFile)
 	defer w.Flush()
 	//Create Headers
-	header := []string{"Filename", "Name", "Description", "Gender", "Attributes", "UUID", "HASH"}
+	header := []string{"TEAM NAMES", "Series Number", "Filename", "Name", "Description", "Gender", "Attributes", "UUID", "HASH"}
 	err = w.Write(header)
 	if err != nil {
 		log.Fatal(err)
@@ -79,7 +82,7 @@ func main() {
 	//Create rows and columns
 	for _, r := range list {
 		var csvRow []string
-		csvRow = append(csvRow, r.FileName, r.Description, fmt.Sprint(r.Attributes), r.Collection.ID, r.Hash)
+		csvRow = append(csvRow, r.TeamName, fmt.Sprint(r.Series_number), r.FileName, r.Name, r.Description, r.Gender, fmt.Sprint(r.Attributes), r.Collection.ID, r.Hash)
 		err = w.Write(csvRow)
 		if err != nil {
 			log.Fatal(err)
